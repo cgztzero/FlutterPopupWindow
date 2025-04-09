@@ -155,6 +155,10 @@ class PopupWindowController {
   }
 
   void switchStatus() {
+    if (popupWindow == null) {
+      return;
+    }
+
     if (isShow) {
       dismiss();
     } else {
