@@ -51,25 +51,29 @@ class _DefaultPopupWindowChildWidgetState extends State<DefaultPopupWindowChildW
 
   void _autoChange() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_context != null) {
-        final RenderBox renderBox = _context!.findRenderObject() as RenderBox;
-        final Size size = renderBox.size;
-        double childHeight = size.height;
-        double screenHeight = _screenHeight();
+      if (_context == null) {
+        return;
+      }
+      final RenderBox renderBox = _context!.findRenderObject() as RenderBox;
+      final Size size = renderBox.size;
+      double childHeight = size.height;
+      double screenHeight = _screenHeight();
 
-        if (widget.position == PopupWindowPosition.bottom) {
-          if (widget.anchorY + widget.offset.dy + childHeight > screenHeight) {
-            _useOriginalDirection = false;
-          } else {
-            _useOriginalDirection = true;
-          }
+      final lastStatus = _useOriginalDirection;
+      if (widget.position == PopupWindowPosition.bottom) {
+        if (widget.anchorY + widget.offset.dy + childHeight > screenHeight) {
+          _useOriginalDirection = false;
         } else {
-          if (widget.anchorY - widget.offset.dy - childHeight <= 0) {
-            _useOriginalDirection = false;
-          } else {
-            _useOriginalDirection = true;
-          }
+          _useOriginalDirection = true;
         }
+      } else {
+        if (widget.anchorY - widget.offset.dy - childHeight <= 0) {
+          _useOriginalDirection = false;
+        } else {
+          _useOriginalDirection = true;
+        }
+      }
+      if (_useOriginalDirection != lastStatus) {
         setState(() {});
       }
     });
